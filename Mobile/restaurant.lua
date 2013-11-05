@@ -135,7 +135,7 @@ function scene:createScene( event )
 
 	for i = 1, iconNo, 1 do
 		local ico = display.newImageRect( iNames[i], icoW, icoW )
-		ico.x, ico.y = i * (w / iconNo) - (w / iconNo / 2), b.y - (b.height / 4)
+		ico.x, ico.y = i * (w / iconNo) - (w / iconNo / 2), b.y - (b.height / 4) + (ico.width / 3)
 		ico:setFillColor( black )
 		ico.alpha = 0
 
