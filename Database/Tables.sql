@@ -16,5 +16,7 @@ CREATE TABLE Meal(
 	vitamin_a INTEGER,
 	vitamin_c INTEGER,
 	calcium INTEGER,
-	iron INTEGER
+	iron INTEGER,
+	restaurant VARCHAR(100) NOT NULL,
+	foreign key fk_1 (restaurant) references Restaurant(name)
 );

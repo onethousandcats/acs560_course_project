@@ -67,7 +67,13 @@ function scene:createScene( event )
 	cals.x, cals.y =  w - margin * 4, margin * 3 + icoW * 1.1 + margin
 	cals.alpha = 0
 	cals.name = "cals"
-
+	
+	sugarLow = native.newTextField( margin * 1.4, 120, icoW, icoW)
+	sugarHigh = native.newTextField( margin * 1.4 + 100, 120, icoW, icoW)
+	sugarLow.inputType, sugarHigh.inputType = "number"
+	sugarLow.name, sugarHigh.name = "sugar"
+	sugarLow.text, sugarHigh.text = "0"
+	sugarLabel = display.newText("sugar", margin * 1.4 + 50, 120, 50, icoW)
 	local iNames = { "cal_icon.png", "fat_icon.png", "sod_icon.png", "chol_icon.png" }
 
 	for i = 1, 4, 1 do
