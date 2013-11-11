@@ -73,13 +73,13 @@ function scene:enterScene( event )
 	
 	-----------------------------------------------------------------------------
 
-	local function goToRestauarants ( event )
+	local function goToRestaurants ( event )
 		if ( event.phase == "began" ) then
 			storyboard.gotoScene( "restaurants" )
 		end
 	end
 
-	add:addEventListener( "touch", goToRestauarants )
+	add:addEventListener( "touch", goToRestaurants )
 
 	local function gotoSettings ( event )
 		if ( event.phase == "began" ) then

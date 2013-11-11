@@ -68,11 +68,14 @@ function scene:createScene( event )
 	cals.alpha = 0
 	cals.name = "cals"
 	
-	sugarLow = native.newTextField( margin * 1.4, 120, icoW, icoW)
-	sugarHigh = native.newTextField( margin * 1.4 + 100, 120, icoW, icoW)
-	sugarLow.inputType, sugarHigh.inputType = "number"
-	sugarLow.name, sugarHigh.name = "sugar"
-	sugarLow.text, sugarHigh.text = "0"
+	sugarLow = native.newTextField( margin * 1.4, 120, icoW, 15)
+	sugarHigh = native.newTextField( margin * 1.4 + 100, 120, icoW, 15)
+	sugarLow.inputType = "number"
+	sugarHigh.inputType = "number"
+	sugarLow.text = "0"
+	sugarHigh.text = "999"
+	sugarLow:addEventListener( "userInput", lowHighInputHandler(sugarLow, sugarHigh) )
+	sugarHigh:addEventListener( "userInput", lowHighInputHandler(sugarLow, sugarHigh) )
 	sugarLabel = display.newText("sugar", margin * 1.4 + 50, 120, 50, icoW)
 	local iNames = { "cal_icon.png", "fat_icon.png", "sod_icon.png", "chol_icon.png" }
 
@@ -130,7 +133,24 @@ function scene:createScene( event )
 	-----------------------------------------------------------------------------
 	
 end
-
+function lowHighInputHandler(lowInput, highInput)
+        return function(event)
+        	if (tonumber(lowInput.text) == nil) then
+        		lowInput.text = 0;
+    		end
+    		if (tonumber(highInput.text) == nil) then
+        		lowInput.text = 0;
+    		end
+        	if (tonumber(lowInput.text) < 0) then
+				lowInput.text = "0"
+			end
+			if (tonumber(lowInput.text) > tonumber(highInput.text)) then
+				lowInput.text = highInput.text
+			end
+			lowInput.text = tonumber(lowInput.text)
+			highInput.text = tonumber(highInput.text) 
+        end
+end
 function returnToLanding ( event )
 	if ( event.phase == "began" ) then
 		if event.target.saveSettings == true then
@@ -238,7 +258,10 @@ function scene:enterScene( event )
 	transition.to( cals, { time = 600, delay = 0, alpha = 1 })
 	transition.to( save, { time = 600, delay = 0, alpha = 1 })
 	transition.to( cancel, { time = 600, delay = 0, alpha = 1 })
-
+	transition.to( sugarLow, { time = 600, delay = 0, alpha = 1})
+	transition.to( sugarHigh, {time = animationTime, delay = delayTime, alpha = 1 })
+	transition.to( sugarLabel, {time = animationTime, delay = delayTime, alpha = 1 })
+	
 	for i = 1, 4, 1 do
 		transition.to( icons[i], { time = 600, delay = 0, alpha = 1 })
 	end
@@ -268,15 +291,20 @@ function scene:exitScene( event )
 	--	INSERT code here (e.g. stop timers, remove listeners, unload sounds, etc.)
 	
 	-----------------------------------------------------------------------------
-	transition.to( setTitle, { time = 600, delay = 0, alpha = 0 })
-	transition.to( cals, { time = 600, delay = 0, alpha = 0 })
-	transition.to( save, { time = 600, delay = 0, alpha = 0 })
-	transition.to( cancel, { time = 600, delay = 0, alpha = 0 })
-
+	local animationTime = 600
+	local delayTime = 0;
+	transition.to( setTitle, { time = animationTime, delay = delayTime, alpha = 0 })
+	transition.to( cals, { time = animationTime, delay = delayTime, alpha = 0 })
+	transition.to( save, { time = animationTime, delay = delayTime, alpha = 0 })
+	transition.to( cancel, { time = animationTime, delay = delayTime, alpha = 0 })
+	transition.to( sugarLow, {time = animationTime, delay = delayTime, alpha = 0 })
+	transition.to( sugarHigh, {time = animationTime, delay = delayTime, alpha = 0 })
+	transition.to( sugarLabel, {time = animationTime, delay = delayTime, alpha = 0 })
+	
 	for i = 1, 4, 1 do
-		transition.to( bars[i], { time = 600, delay = 0, alpha = 0 })
-		transition.to( pointers[i], { time = 600, delay = 0, alpha = 0 })
-		transition.to( icons[i], { time = 600, delay = 0, alpha = 0 })
+		transition.to( bars[i], { time = animationTime, delay = 0, alpha = 0 })
+		transition.to( pointers[i], { time = animationTime, delay = 0, alpha = 0 })
+		transition.to( icons[i], { time = animationTime, delay = 0, alpha = 0 })
 	end	
 
 	--if it wasn't saved, set the cals back to what they were initially
