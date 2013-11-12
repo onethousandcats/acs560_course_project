@@ -5,6 +5,7 @@
 ----------------------------------------------------------------------------------
 
 local storyboard = require( "storyboard" )
+local json = require( "json" )
 local scene = storyboard.newScene()
 
 ----------------------------------------------------------------------------------
@@ -150,11 +151,53 @@ function scene:createScene( event )
 		sta.x = ico.x
 
 		stats[ #stats + 1 ] = sta
-
 	end
-
+	local function mealsCallback ( event )
+		print("Callback!!");
+		if ( event.isError ) then
+			print( "Error occurred in callback." )
+		else
+			print ( "RESPONSE:" .. event.response )
+			data = json.decode( event.response )
+			createBars(data);	
+		end
+		return true;
+	end
+	local function getMeals ( event )
+		local url = "http://unna.me/api/menu/2"
+		network.request( url, "GET", mealsCallback )
+		print("getting meals...");
+	end
+	getMeals()
 end
 
+--Quickly added this function, needs to be cleaned up.
+function createBars(data)
+	local w = display.viewableContentWidth
+	local h = display.viewableContentHeight
+	margin = h / 4
+	barH = h / 10
+	spacing = h / 100
+	for i = 1, table.getn(data), 1 do
+		
+		--create bars
+		local bar = display.newRect(0, 0, w - spacing, barH)
+		bar:setFillColor( 254, 254, 254 )
+		bar.x , bar.y = w / 2, margin + (barH  + spacing / 2) * (i - 1)
+		bar.alpha = 1
+		bar.rid = i
+
+		--bars[ #bars + 1 ] = bar
+
+		--create menu items
+		local rest = display.newText(data[i], xMar, bar.y - spacing * 3, "Segan", 18)
+		rest:setTextColor( black )
+		rest.alpha = 1
+		rest:setReferencePoint( display.TopLeftReferencePoint )
+		rest.x = xMar
+		--rests[ #rests + 1 ] = rest	
+	end
+end
 
 -- Called immediately after scene has moved onscreen:
 function scene:enterScene( event )
