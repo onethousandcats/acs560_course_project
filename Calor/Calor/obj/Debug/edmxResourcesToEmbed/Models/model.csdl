@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="DB_48226_calorModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+  <EntityContainer Name="DB_48226_calorEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Items" EntityType="DB_48226_calorModel.Item" />
+    <EntitySet Name="Restaurants" EntityType="DB_48226_calorModel.Restaurant" />
+    <AssociationSet Name="FK_Items_Restaurants" Association="DB_48226_calorModel.FK_Items_Restaurants">
+      <End Role="Restaurants" EntitySet="Restaurants" />
+      <End Role="Items" EntitySet="Items" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Item">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="RestaurantId" Type="Int32" />
+    <NavigationProperty Name="Restaurant" Relationship="DB_48226_calorModel.FK_Items_Restaurants" FromRole="Items" ToRole="Restaurants" />
+  </EntityType>
+  <EntityType Name="Restaurant">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+    <NavigationProperty Name="Items" Relationship="DB_48226_calorModel.FK_Items_Restaurants" FromRole="Restaurants" ToRole="Items" />
+  </EntityType>
+  <Association Name="FK_Items_Restaurants">
+    <End Role="Restaurants" Type="DB_48226_calorModel.Restaurant" Multiplicity="0..1" />
+    <End Role="Items" Type="DB_48226_calorModel.Item" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Restaurants">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Items">
+        <PropertyRef Name="RestaurantId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

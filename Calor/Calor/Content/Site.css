@@ -1,0 +1,267 @@
+﻿body {
+    font-size: 1.60em;
+    font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+    color: #232323;
+    background-color: #fff;
+}
+
+header, footer, nav, section {
+    display: block;
+}
+
+
+/* Styles for basic forms
+-----------------------------------------------------------*/
+fieldset {
+    border: 1px solid #ddd;
+    padding: 0 1.4em 1.4em 1.4em;
+    margin: 0 0 1.5em 0;
+}
+
+legend {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+textarea {
+    min-height: 75px;
+}
+
+.editor-label {
+    margin: 1em 0 0 0;
+}
+
+.editor-field {
+    margin: 0.5em 0 0 0;
+}
+
+
+/* Styles for validation helpers
+-----------------------------------------------------------*/
+.field-validation-error {
+    color: #f00;
+}
+
+.field-validation-valid {
+    display: none;
+}
+
+.input-validation-error {
+    border: 1px solid #f00;
+    background-color: #fee;
+}
+
+.validation-summary-errors {
+    font-weight: bold;
+    color: #f00;
+}
+
+.validation-summary-valid {
+    display: none;
+}
+
+/* Custom styles
+-----------------------------------------------------------*/
+
+.navbar .nav > li > a, .navbar .nav > li > a:hover, .navbar .nav > li > a:visited {
+    color: #fff;
+    background-color: #2ecfc2;
+    font-weight: 100;
+    padding: 8px 15px;
+    border-radius: 0;
+    border: none;
+}
+
+.top-nav {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    float: none;
+}
+
+.navbar {
+    margin-bottom: 0px;
+    min-height: 30px;
+    padding: 0px;
+}
+
+    .navbar .nav {
+        margin: 0px;
+        float: none;
+    }
+
+.navbar-inner {
+    background-color: #000;
+    background-image: none;
+    border: none;
+    border-radius: 0 !important;
+    filter: none;
+    min-height: 30px;
+}
+
+.left-nav {
+    background-color: #F7F5FA;
+    padding: 0;
+}
+
+.left-nav .nav .nav > li > a {
+    font-size: 90%;
+    padding-bottom: 8px;
+    padding-left: 30px;
+    padding-top: 8px;
+    border: none;
+}
+
+.nav > li > a {
+    color: #716B7A;
+    border-bottom: 1px solid #ddd;
+}
+
+.nav ul {
+    padding-bottom: 10px;
+}
+
+.sidebar {
+    padding: 0 15px 80px;
+}
+
+.support {
+    background-color: #ade5af;
+}
+
+.support > a, .support > a:hover {
+    color: #fff !important;
+    border-bottom-color: #fff !important;
+}
+
+.support > a:hover {
+    background-color: #4cc151 !important;
+    border-right: 1px solid #ddd;        
+}
+
+.content-body {
+    padding-left: 30px;
+}
+
+.side-bar {
+    left: 284px;
+    top: -5px;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    color: #716B7A;
+    background-color: #F7F5FA;
+    font-size: 90%;
+    padding-bottom: 0;
+    padding-top: 0;
+    border-top: 1px solid #ddd;
+}
+
+.dropdown-menu > li > a {
+    color: #716B7A;
+    padding-bottom: 8px;
+    padding-left: 30px;
+    padding-top: 8px;
+}
+
+.dropdown-menu > li > a:hover {
+    background-color: #eee !important;
+    color: #716B7A;
+    background-image: none;      
+}
+
+.page-header > h1 {
+    font-size: 20px;
+}
+
+.page-header > h1 small {
+    font-size: 16px;
+}
+
+.content-body {
+    padding: 50px 100px;
+}
+
+.typeahead .active > a, .typeahead .active > a:hover {
+	background-color: #4cc151 !important;
+	filter: none;
+}
+
+.dropdown-menu {
+	border-radius: 0;
+}
+
+.dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
+	background-image: none;
+}
+
+.dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus, .dropdown-submenu:hover > a, .dropdown-submenu:focus > a {
+	background-image: none;
+	background-color: #4cc151;
+	filter: none;
+}
+
+
+textarea:focus, input[type="text"]:focus, input[type="password"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="date"]:focus, input[type="month"]:focus, input[type="time"]:focus, input[type="week"]:focus, input[type="number"]:focus, input[type="email"]:focus, input[type="url"]:focus, input[type="search"]:focus, input[type="tel"]:focus, input[type="color"]:focus, .uneditable-input:focus, .chosen-container-active .chosen-choices {
+    border-color: rgba(227, 82, 5, 0.8);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(227, 82, 5, 0.6);
+}
+textarea:focus, input[type="text"]:focus, input[type="password"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="date"]:focus, input[type="month"]:focus, input[type="time"]:focus, input[type="week"]:focus, input[type="number"]:focus, input[type="email"]:focus, input[type="url"]:focus, input[type="search"]:focus, input[type="tel"]:focus, input[type="color"]:focus, .uneditable-input:focus {
+    outline: 0 none;
+}
+select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
+    border-radius: 0 0 0 0;
+}
+
+textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
+    background-color: #FFFFFF;
+    border: 1px solid #CCCCCC;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    transition: border 0.2s linear 0s, box-shadow 0.2s linear 0s;
+}
+
+select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
+    color: #555555;
+    font-size: 14px;
+    height: 30px;
+    line-height: 20px;
+    padding: 4px 6px;
+}
+
+input, button, select, textarea {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+.in-med {
+    width: 400px;
+}
+
+.section {
+    padding-bottom: 40px;
+}
+
+.btn a {
+    background-color: #555555;
+    color: #000;
+}
+
+.btn:hover, .btn:focus {
+    color: #000;
+    text-decoration: none;
+}
+
+
+@media screen and (max-width: 480px) {
+    
+    @-ms-viewport{
+        width:320px;
+    }
+
+    .content-body {
+        padding: 10px;
+    }
+
+    .sidebar {
+        padding: 0;
+    }
+
+}

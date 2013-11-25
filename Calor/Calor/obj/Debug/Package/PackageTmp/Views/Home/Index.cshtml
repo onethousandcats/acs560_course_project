@@ -1,0 +1,25 @@
+﻿@model Calor.Models.HomeWrapper
+
+<div class="section">
+    @if (Model.Restaurants != null)
+    {
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Restaurants</th>
+                    <th>No. Items</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in Model.Restaurants)
+                {
+                    <tr>
+                        <td>@r.Name</td>
+                        <td>@r.Items.Count</td>
+                    </tr>
+                }
+            </tbody>
+        </table>   
+    }
+</div>
+

@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <!--
+    <script>
+        if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
+            var msViewportStyle = document.createElement("style");
+            msViewportStyle.appendChild(
+              document.createTextNode(
+                '@@-ms-viewport{width:320px!important}'
+              )
+            );
+            document.getElementsByTagName("head")[0].
+              appendChild(msViewportStyle);
+        }
+    </script>
+    -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="Shortcut Icon" href="/Content/images/favicon.ico" />
+    <title>CALOR A WAY TO COUNT CALORIES</title>
+    @Styles.Render("~/css")
+    @Scripts.Render("~/scripts")
+    @RenderSection("scripts", required: false)
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <div class="navbar-inner">
+                <ul class="nav top-nav navbar-nav">
+                    <li><a href="/Home">
+                        <img src="/Content/images/x.png" alt="" />
+                        HOME </a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 left-nav">
+                <ul class="nav sidebar">
+                    <li><a href="#">Restaurants</a>
+
+                    </li>
+                    <li><a href="#">iOS</a>
+
+                    </li>
+                    <li><a href="#">Android</a>
+
+                    </li>
+                    <li><a href="#">Support</a>
+
+                    </li>    
+                </ul>
+
+            </div>
+            <div class="col-lg-9 content-body">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+</body>
+</html>
