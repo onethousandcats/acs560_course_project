@@ -24,7 +24,8 @@ end
 io.close(f)
 --
 
-currentVals = { setArray[2], setArray[3], setArray[4] }
+currentLowVals = { setArray[2], setArray[4], setArray[6] }
+currentHighVals = { setArray[3], setArray[5], setArray[7] }
 
 function removeAllListeners(obj)
   obj._functionListeners = nil
@@ -33,7 +34,8 @@ end
 
 local icons = {}
 local bars = {}
-local pointers = {}
+local pointersLow = {}
+local pointersHigh = {}
 
 local margin = w / 8
 
@@ -78,7 +80,7 @@ function scene:createScene( event )
 	sugarHigh:addEventListener( "userInput", lowHighInputHandler(sugarLow, sugarHigh) )
 	sugarLabel = display.newText("sugar", margin * 1.4 + 50, 120, 50, icoW)
 	local iNames = { "cal_icon.png", "fat_icon.png", "sod_icon.png", "chol_icon.png" }
-
+	local currentValueIndex = 1
 	for i = 1, 4, 1 do
 		
 		local ico = display.newImageRect( iNames[i], icoW, icoW )
@@ -90,7 +92,7 @@ function scene:createScene( event )
 
 		barW = w / 2
 		barMin = (ico.x + w / 2.5) - (barW / 2)
-
+		
 		if i > 1 then
 			local bar = display.newRect( 0, 0, barW, 1 )
 			bar.x, bar.y = ico.x + w / 2.5, ico.y
@@ -99,19 +101,25 @@ function scene:createScene( event )
 
 			bars[ #bars + 1 ] = bar
 
-			local poi = display.newCircle( bar.x - (barW / 2) + (barW * setArray[i]), bar.y, 6 )
-			poi.alpha = 0
-			poi:setFillColor( black )
-
-			pointers[ #pointers + 1 ] = poi		
-
+			local pointerHigh = display.newCircle( barMin + barW * currentHighVals[currentValueIndex], bar.y, 6 )			
+			pointerHigh.alpha = 0
+			pointerHigh:setFillColor( black )
+			local pointerLow = display.newCircle( barMin + barW * currentLowVals[currentValueIndex], bar.y, 6 )			
+			pointerLow.alpha = 0
+			pointerLow:setFillColor( black )
+			pointersLow[ #pointersLow + 1 ] = pointerLow
+			pointersHigh[ #pointersHigh + 1] = pointerHigh	
+			currentValueIndex = currentValueIndex + 1;
 		end
 		
 	end
 
-	pointers[1].name = "fat"
-	pointers[2].name = "sod"
-	pointers[3].name = "chol"
+	pointersHigh[1].name = "fathigh"
+	pointersLow[1].name = "fatlow";
+	pointersHigh[2].name = "sodhigh"
+	pointersLow[2].name = "sodlow"
+	pointersHigh[3].name = "cholhigh"
+	pointersLow[3].name = "chollow"
 
 	save = display.newImageRect( "save_icon.png", icoW * .8, icoW * .8 )
 	save.x, save.y = margin * 2.4, h * .9
@@ -157,8 +165,9 @@ function returnToLanding ( event )
 			print("settings have been saved")
 
 			setArray[1] = cals.text
-			for i = 1, #currentVals, 1 do
-				setArray[i + 1] = currentVals[i]
+			for i = 1, #currentLowVals, 1 do
+				setArray[i * 2] = currentLowVals[i]
+				setArray[i * 2 + 1] = currentHighVals[i]
 			end
 
 			local f = io.open( sPath, "w" )
@@ -210,32 +219,22 @@ function sceneTouch ( event )
 					
 					local newValue = (newX - barMin) / (barW)
 					print ( newValue )
-
-					local d
-
-					t.x = newX
-
-					local oldValue
-
+					local offset = 10 -- Just temporary
 					local j = 1
-					for _,i in ipairs( pointers ) do
-						if i.name == t.name then
-							oldValue = currentVals[j]
-							currentVals[j] = newValue
+					for i = 1, #pointersLow, 1 do
+					--for _,i in ipairs( pointers ) do
+						local pointerLow = pointersLow[i]
+						local pointerHigh = pointersHigh[i];
+						if pointerLow.name == t.name and newX <= pointerHigh.x then
+							currentLowVals[j] = newValue
+							t.x = newX
+						elseif pointerHigh.name == t.name and newX >= pointerLow.x then
+							currentHighVals[j] = newValue
+							t.x = newX
 						end
 						j = j + 1
 					end
 
-					j = 1
-					for _,o in ipairs( pointers ) do
-						if o.name ~= t.name then
-							currentVals[j] = currentVals[j] / (1 - oldValue) * (1 - newValue)
-							o.x = barMin + barW * currentVals[j]
-						end
-						j = j + 1
-					end
-
-					print( currentVals[1] .. ", " .. currentVals[2] .. ", " .. currentVals[3] )
 				end
 
 			elseif event.phase == "ended" or event.phase == "cancelled" then
@@ -268,9 +267,11 @@ function scene:enterScene( event )
 
 	for i = 1, 3, 1 do
 		transition.to( bars[i], { time = 600, delay = 0, alpha = 1 })
-		transition.to( pointers[i], { time = 600, delay = 0, alpha = 1 })
+		transition.to( pointersLow[i], { time = 600, delay = 0, alpha = 1 })
+		transition.to( pointersHigh[i], { time = 600, delay = 0, alpha = 1 })
 
-		pointers[i]:addEventListener( "touch", sceneTouch )
+		pointersLow[i]:addEventListener( "touch", sceneTouch )
+		pointersHigh[i]:addEventListener( "touch", sceneTouch )
 	end
 
 	cals:addEventListener( "touch", sceneTouch )
@@ -303,7 +304,8 @@ function scene:exitScene( event )
 	
 	for i = 1, 4, 1 do
 		transition.to( bars[i], { time = animationTime, delay = 0, alpha = 0 })
-		transition.to( pointers[i], { time = animationTime, delay = 0, alpha = 0 })
+		transition.to( pointersLow[i], { time = animationTime, delay = 0, alpha = 0 })
+		transition.to( pointersHigh[i], { time = animationTime, delay = 0, alpha = 0 })
 		transition.to( icons[i], { time = animationTime, delay = 0, alpha = 0 })
 	end	
 
@@ -312,9 +314,11 @@ function scene:exitScene( event )
 
 
 	local j = 1
-	for _,i in ipairs( pointers ) do
-		i.x = barMin + barW * setArray[j + 1]
-		j = j + 1
+	for i = 1, #pointersLow, 1 do
+		pointerLow = pointersLow[i]
+		pointerHigh = pointersHigh[i]
+		pointerLow.x = barMin + barW * setArray[i * 2]
+		pointerHigh.x = barMin + barW * setArray[i * 2 + 1]
 	end
 
 	Runtime:removeEventListener( "touch", sceneTouch )
@@ -339,7 +343,8 @@ function scene:destroyScene( event )
 	for i = 1, 4, 1 do
 		bars[i]:removeSelf()
 		icons[i]:removeSelf()
-		pointers[i]:removeSelf()
+		pointersLow[i]:removeSelf()
+		pointersHigh[i]:removeSelf()
 	end	
 
 end
