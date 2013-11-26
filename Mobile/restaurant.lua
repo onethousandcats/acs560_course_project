@@ -24,20 +24,10 @@ local black = { 0, 0, 0 }
 
 local icons, stats = {}, {}
 
-local sPath = system.pathForFile( "settings.txt" )
-
-local f = io.open( sPath, "r" )
-
-local setArray = {}
-
-for line in f:lines() do
-	setArray[ #setArray + 1 ] = line
-end
-
-io.close(f)
-
 local ret
-
+local bars = {}
+local rests = {}
+local meals
 ---------------------------------------------------------------------------------
 -- BEGINNING OF YOUR IMPLEMENTATION
 ---------------------------------------------------------------------------------
@@ -126,14 +116,6 @@ function scene:createScene( event )
 	--add icons
 	local iconNo = 4
 
-	local values = {}
-
-	values[1] = setArray[1]
-
-	for i = 2, #setArray, 1 do
-		values[i] = math.round(setArray[i] * values[1])
-	end
-
 	for i = 1, iconNo, 1 do
 		local ico = display.newImageRect( iNames[i], icoW, icoW )
 		ico.x, ico.y = i * (w / iconNo) - (w / iconNo / 2), b.y - (b.height / 4) + (ico.width / 3)
@@ -142,7 +124,7 @@ function scene:createScene( event )
 
 		icons[ #icons + 1 ] = ico
 
-		local sta = display.newText(values[i], ico.x, b.y + (b.height / 8), "Segan", 18, "center")
+		local sta = display.newText("0", ico.x, b.y + (b.height / 8), "Segan", 18, "center")
 		sta.alpha = 0
 		sta:setTextColor( black )
 
@@ -152,53 +134,53 @@ function scene:createScene( event )
 
 		stats[ #stats + 1 ] = sta
 	end
-	local function mealsCallback ( event )
-		print("Callback!!");
-		if ( event.isError ) then
-			print( "Error occurred in callback." )
-		else
-			print ( "RESPONSE:" .. event.response )
-			data = json.decode( event.response )
-			createBars(data);	
-		end
-		return true;
-	end
-	local function getMeals ( event )
-		local url = "http://unna.me/api/menu/2"
-		network.request( url, "GET", mealsCallback )
-		print("getting meals...");
-	end
-	getMeals()
+
 end
 
 --Quickly added this function, needs to be cleaned up.
-function createBars(data)
+function createBars()
 	local w = display.viewableContentWidth
 	local h = display.viewableContentHeight
 	margin = h / 4
 	barH = h / 10
 	spacing = h / 100
-	for i = 1, table.getn(data), 1 do
+	for i = 1, table.getn(meals), 1 do
 		
 		--create bars
 		local bar = display.newRect(0, 0, w - spacing, barH)
 		bar:setFillColor( 254, 254, 254 )
 		bar.x , bar.y = w / 2, margin + (barH  + spacing / 2) * (i - 1)
-		bar.alpha = 1
+		bar.alpha = 0
 		bar.rid = i
 
-		--bars[ #bars + 1 ] = bar
+		bars[ #bars + 1 ] = bar
 
 		--create menu items
-		local rest = display.newText(data[i], xMar, bar.y - spacing * 3, "Segan", 18)
+		local rest = display.newText(meals[i].name, xMar, bar.y - spacing * 3, "Segan", 18)
 		rest:setTextColor( black )
-		rest.alpha = 1
+		rest.alpha = 0
 		rest:setReferencePoint( display.TopLeftReferencePoint )
 		rest.x = xMar
-		--rests[ #rests + 1 ] = rest	
+		rest:addEventListener("touch", updateStats(i) )
+		rests[ #rests + 1 ] = rest	
+	end
+	local d = 600
+	for i = 1, #bars, 1 do
+		transition.to( bars[i], { time = 600, delay = d + (i - 1) * 200, alpha = 1 } )
+		transition.to( rests[i], { time = 600, delay = d + (i - 1) * 200, alpha = 1 } )
 	end
 end
-
+function updateStats( mealIndex )
+	return function(event)
+		if ( event.phase == "began" ) then
+			print(mealIndex)
+			stats[1].text = meals[mealIndex].calories
+			stats[2].text = meals[mealIndex].fat
+			stats[3].text = meals[mealIndex].sodium
+			stats[4].text = meals[mealIndex].cholesterol
+		end
+	end
+end
 -- Called immediately after scene has moved onscreen:
 function scene:enterScene( event )
 	local group = self.view
@@ -229,7 +211,7 @@ function scene:enterScene( event )
 		transition.to( icons[i], { time = 600, delay = 600, alpha = 1 })		
 		transition.to( stats[i], { time = 600, delay = 800, alpha = 1 })	
 	end
-
+	
 	local function returnToRests( event )
 		if ( event.phase == "began" ) then
 			storyboard.gotoScene( "restaurants" )
@@ -239,7 +221,8 @@ function scene:enterScene( event )
 	ret:addEventListener("touch", returnToRests )
 	retL:addEventListener("touch", returnToRests )
 	retR:addEventListener("touch", returnToRests )	
-
+	meals = event.params.meals
+	createBars()
 end
 
 
@@ -271,7 +254,11 @@ function scene:exitScene( event )
 		transition.to( icons[i], { time = 600, delay = 600, alpha = 0 })		
 		transition.to( stats[i], { time = 600, delay = 800, alpha = 0 })	
 	end
-
+	
+	for i = 1, #bars, 1 do
+		transition.to( bars[i], { time = 600, delay = 600, alpha = 0 } )
+		transition.to( rests[i], { time = 600, delay = 600, alpha = 0 } )
+	end
 end
 
 

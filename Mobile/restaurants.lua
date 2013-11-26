@@ -28,6 +28,7 @@ local bars = {}
 local rests = {}
 local chevs = {}
 
+local data
 ---------------------------------------------------------------------------------
 -- BEGINNING OF YOUR IMPLEMENTATION
 ---------------------------------------------------------------------------------
@@ -42,12 +43,19 @@ end
 local function selectRest( event )
 
 	if ( event.phase == "began" ) then
-
+		local restaurantName =  rests[ event.target.rid ].text
+		mealObjects = {}
+		for i = 1, #data, 1 do
+			if (data[i].restaurant == restaurantName) then
+				mealObjects[#mealObjects + 1] = data[i]
+			end
+		end
 		local opt =
 		{
 			params = 
 			{
-				name = rests[ event.target.rid ].text
+				name = restaurantName,
+				meals = mealObjects
 			}
 		}
 
@@ -121,26 +129,61 @@ function scene:createScene( event )
 
 	ret:addEventListener( "touch", goHome )
 
-	local data
-
+	function Set (list)
+	  local set = {}
+	  for _, l in ipairs(list) do set[l] = true end
+	  return set
+	end
+	
 	local function restaurantsCallback ( event )
 		if ( event.isError ) then
 			print( "Error occurred in callback." )
 		else
 			print ( "RESPONSE:" .. event.response )
 			data = json.decode( event.response )
-
-			for i = 1, 5, 1 do	
-				rests[i].text = data[i]
+			local restaurants = {}
+			for i = 1, #data, 1 do	
+				local restaurant = data[i].restaurant
+				if (restaurants[restaurant] == nil) then
+					restaurants[restaurant] = 1
+				else
+					restaurants[restaurant] = restaurants[restaurant] + 1
+				end
+			end
+			local i = 1
+			for restaurant, num_of_items in pairs(restaurants) do
+				rests[i].text = restaurant
 				rests[i]:setReferencePoint( display.TopLeftReferencePoint )
 				rests[i].x = xMar
+				i = i + 1
 			end	
 		end
 		return true;
 	end
 
 	local function getRestaurants ( event )
-		local url = "http://unname00.w08.wh-2.com/api/restaurants"
+		--local url = "http://unname00.w08.wh-2.com/api/restaurants"
+		local maxVals = { 2000, 100, 2000, 300 } -- calories, fat, sodium, cholesterol
+		local constraintNames = {"calories", "fat", "sodium", "cholesterol"}
+		local sPath = system.pathForFile( "settings.txt" )
+		local f = io.open( sPath, "r" )
+		local setArray = {}
+		for line in f:lines() do
+			setArray[ #setArray + 1 ] = line
+		end
+		local first = true;
+		local url = "http://slypro.hostjava.net/NutriFacts.php"
+		for i = 1, #constraintNames, 1 do
+			local constraintName = constraintNames[i]
+			local startSymbol = "&"
+			if (first == true) then
+				url = url .. "?"
+				first = false
+			end
+			url = url .. startSymbol .. "low" .. constraintName .. "=" .. math.floor(setArray[i * 2 - 1] * maxVals[i])
+			url = url .. "&high" .. constraintName .. "=" .. math.floor(setArray[i * 2] * maxVals[i])
+		end
+		print("url is " .. url)
 		network.request( url, "GET", restaurantsCallback )
 	end
 
