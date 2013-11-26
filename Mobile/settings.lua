@@ -23,7 +23,7 @@ end
 
 io.close(f)
 --
-
+numOfSteps = 100;
 maxVals = { 100, 1000, 300 } -- fat, sodium, cholesterol
 currentLowVals = { setArray[2], setArray[4], setArray[6] }
 currentHighVals = { setArray[3], setArray[5], setArray[7] }
@@ -73,15 +73,6 @@ function scene:createScene( event )
 	cals.alpha = 0
 	cals.name = "cals"
 	
-	sugarLow = native.newTextField( margin * 1.4, 120, icoW, 15)
-	sugarHigh = native.newTextField( margin * 1.4 + 100, 120, icoW, 15)
-	sugarLow.inputType = "number"
-	sugarHigh.inputType = "number"
-	sugarLow.text = "0"
-	sugarHigh.text = "999"
-	sugarLow:addEventListener( "userInput", lowHighInputHandler(sugarLow, sugarHigh) )
-	sugarHigh:addEventListener( "userInput", lowHighInputHandler(sugarLow, sugarHigh) )
-	sugarLabel = display.newText("sugar", margin * 1.4 + 50, 120, 50, icoW)
 	local iNames = { "cal_icon.png", "fat_icon.png", "sod_icon.png", "chol_icon.png" }
 	local currentValueIndex = 1
 	for i = 1, 4, 1 do
@@ -153,27 +144,16 @@ function scene:createScene( event )
 end
 function updateTextViews()
 	for i = 1, #textViewsLow, 1 do
-		textViewsLow[i].text = math.floor(currentLowVals[i] * maxVals[i])
-		textViewsHigh[i].text = math.ceil(currentHighVals[i] * maxVals[i])
+		textViewsLow[i].text = round(currentLowVals[i] * maxVals[i], maxVals[i] / numOfSteps)
+		textViewsHigh[i].text = round(currentHighVals[i] * maxVals[i], maxVals[i] / numOfSteps)
 	end
 end
-function lowHighInputHandler(lowInput, highInput)
-        return function(event)
-        	if (tonumber(lowInput.text) == nil) then
-        		lowInput.text = 0;
-    		end
-    		if (tonumber(highInput.text) == nil) then
-        		lowInput.text = 0;
-    		end
-        	if (tonumber(lowInput.text) < 0) then
-				lowInput.text = "0"
-			end
-			if (tonumber(lowInput.text) > tonumber(highInput.text)) then
-				lowInput.text = highInput.text
-			end
-			lowInput.text = tonumber(lowInput.text)
-			highInput.text = tonumber(highInput.text) 
-        end
+-- Round 'num' to nearest N*'step' (step can be any positive number, i.e. 22.5)
+	--
+function round( v, step )
+    step= step or 1
+    assert( step > 0 )
+    return math.floor( (v+step/2) / step ) * step
 end
 function returnToLanding ( event )
 	if ( event.phase == "began" ) then
@@ -273,9 +253,6 @@ function scene:enterScene( event )
 	transition.to( cals, { time = 600, delay = 0, alpha = 1 })
 	transition.to( save, { time = 600, delay = 0, alpha = 1 })
 	transition.to( cancel, { time = 600, delay = 0, alpha = 1 })
-	transition.to( sugarLow, { time = 600, delay = 0, alpha = 1})
-	transition.to( sugarHigh, {time = animationTime, delay = delayTime, alpha = 1 })
-	transition.to( sugarLabel, {time = animationTime, delay = delayTime, alpha = 1 })
 	
 	for i = 1, 4, 1 do
 		transition.to( icons[i], { time = 600, delay = 0, alpha = 1 })
@@ -303,7 +280,6 @@ end
 
 -- Called when scene is about to move offscreen:
 function scene:exitScene( event )
-	updateTextViews();
 	local group = self.view
 	
 	-----------------------------------------------------------------------------
@@ -317,9 +293,6 @@ function scene:exitScene( event )
 	transition.to( cals, { time = animationTime, delay = delayTime, alpha = 0 })
 	transition.to( save, { time = animationTime, delay = delayTime, alpha = 0 })
 	transition.to( cancel, { time = animationTime, delay = delayTime, alpha = 0 })
-	transition.to( sugarLow, {time = animationTime, delay = delayTime, alpha = 0 })
-	transition.to( sugarHigh, {time = animationTime, delay = delayTime, alpha = 0 })
-	transition.to( sugarLabel, {time = animationTime, delay = delayTime, alpha = 0 })
 	
 	for i = 1, 3, 1 do
 		transition.to( bars[i], { time = animationTime, delay = 0, alpha = 0 })
@@ -329,7 +302,7 @@ function scene:exitScene( event )
 		transition.to( textViewsHigh[i], { time = animationTime, delay = 0, alpha = 0 })
 		transition.to( icons[i], { time = animationTime, delay = 0, alpha = 0 })
 	end	
-
+	transition.to( icons[4], { time = animationTime, delay = 0, alpha = 0 }) -- The extra final icon.
 	--if it wasn't saved, set the cals back to what they were initially
 	cals.text = setArray[1]
 
@@ -340,7 +313,12 @@ function scene:exitScene( event )
 		pointerHigh = pointersHigh[i]
 		pointerLow.x = barMin + barW * setArray[i * 2]
 		pointerHigh.x = barMin + barW * setArray[i * 2 + 1]
+		for i = 1, #currentLowVals, 1 do
+			currentLowVals[i] = setArray[i * 2]
+			currentHighVals[i] = setArray[i * 2 + 1] 
+		end
 	end
+	updateTextViews();
 
 	Runtime:removeEventListener( "touch", sceneTouch )
 
