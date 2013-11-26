@@ -112,13 +112,15 @@ function scene:createScene( event )
 	end
 	updateTextViews();
 	
-	pointersHigh[1].name = "fathigh"
-	pointersLow[1].name = "fatlow";
-	pointersHigh[2].name = "sodhigh"
-	pointersLow[2].name = "sodlow"
-	pointersHigh[3].name = "cholhigh"
-	pointersLow[3].name = "chollow"
-
+	pointersHigh[1].name = "calhigh"
+	pointersLow[1].name = "callow"
+	pointersHigh[2].name = "fathigh"
+	pointersLow[2].name = "fatlow";
+	pointersHigh[3].name = "sodhigh"
+	pointersLow[3].name = "sodlow"
+	pointersHigh[4].name = "cholhigh"
+	pointersLow[4].name = "chollow"
+	
 	save = display.newImageRect( "save_icon.png", icoW * .8, icoW * .8 )
 	save.x, save.y = margin * 2.4, h * .9
 	save:setFillColor( black )
