@@ -24,6 +24,7 @@ end
 io.close(f)
 --
 
+maxVals = { 100, 1000, 300 } -- fat, sodium, cholesterol
 currentLowVals = { setArray[2], setArray[4], setArray[6] }
 currentHighVals = { setArray[3], setArray[5], setArray[7] }
 
@@ -32,6 +33,8 @@ function removeAllListeners(obj)
   obj._tableListeners = nil
 end
 
+local textViewsLow = {}
+local textViewsHigh = {}
 local icons = {}
 local bars = {}
 local pointersLow = {}
@@ -109,9 +112,16 @@ function scene:createScene( event )
 			pointerLow:setFillColor( black )
 			pointersLow[ #pointersLow + 1 ] = pointerLow
 			pointersHigh[ #pointersHigh + 1] = pointerHigh	
+			valueLow, valueHigh = display.newText("0", 0, 0, "Segan", 20), display.newText(maxVals[currentValueIndex], 0, 0, "Segan", 20)
+			valueLow:setTextColor( black )
+			valueHigh:setTextColor( black )
+			valueLow.x, valueHigh.x, valueLow.y, valueHigh.y =  barMin - 15, barMin + barW + 30, bar.y, bar.y
+			valueLow.alpha, valueHigh.alpha = 0, 0
+			textViewsLow[ #textViewsLow + 1] = valueLow;
+			textViewsHigh[ #textViewsHigh + 1] = valueHigh;
 			currentValueIndex = currentValueIndex + 1;
 		end
-		
+		updateTextViews();
 	end
 
 	pointersHigh[1].name = "fathigh"
@@ -140,6 +150,12 @@ function scene:createScene( event )
 	
 	-----------------------------------------------------------------------------
 	
+end
+function updateTextViews()
+	for i = 1, #textViewsLow, 1 do
+		textViewsLow[i].text = math.floor(currentLowVals[i] * maxVals[i])
+		textViewsHigh[i].text = math.ceil(currentHighVals[i] * maxVals[i])
+	end
 end
 function lowHighInputHandler(lowInput, highInput)
         return function(event)
@@ -234,7 +250,7 @@ function sceneTouch ( event )
 						end
 						j = j + 1
 					end
-
+					updateTextViews();
 				end
 
 			elseif event.phase == "ended" or event.phase == "cancelled" then
@@ -269,6 +285,8 @@ function scene:enterScene( event )
 		transition.to( bars[i], { time = 600, delay = 0, alpha = 1 })
 		transition.to( pointersLow[i], { time = 600, delay = 0, alpha = 1 })
 		transition.to( pointersHigh[i], { time = 600, delay = 0, alpha = 1 })
+		transition.to( textViewsLow[i], { time = 600, delay = 0, alpha = 1 })
+		transition.to( textViewsHigh[i], { time = 600, delay = 0, alpha = 1 })
 
 		pointersLow[i]:addEventListener( "touch", sceneTouch )
 		pointersHigh[i]:addEventListener( "touch", sceneTouch )
@@ -279,12 +297,13 @@ function scene:enterScene( event )
 	save:addEventListener( "touch", returnToLanding )
 	cancel:addEventListener( "touch", returnToLanding )
 
-
+	updateTextViews();
 end
 
 
 -- Called when scene is about to move offscreen:
 function scene:exitScene( event )
+	updateTextViews();
 	local group = self.view
 	
 	-----------------------------------------------------------------------------
@@ -302,10 +321,12 @@ function scene:exitScene( event )
 	transition.to( sugarHigh, {time = animationTime, delay = delayTime, alpha = 0 })
 	transition.to( sugarLabel, {time = animationTime, delay = delayTime, alpha = 0 })
 	
-	for i = 1, 4, 1 do
+	for i = 1, 3, 1 do
 		transition.to( bars[i], { time = animationTime, delay = 0, alpha = 0 })
 		transition.to( pointersLow[i], { time = animationTime, delay = 0, alpha = 0 })
 		transition.to( pointersHigh[i], { time = animationTime, delay = 0, alpha = 0 })
+		transition.to( textViewsLow[i], { time = animationTime, delay = 0, alpha = 0 })
+		transition.to( textViewsHigh[i], { time = animationTime, delay = 0, alpha = 0 })
 		transition.to( icons[i], { time = animationTime, delay = 0, alpha = 0 })
 	end	
 
