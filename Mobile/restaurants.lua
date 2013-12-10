@@ -130,6 +130,12 @@ function scene:createScene( event )
 				rests[i].x = xMar
 				i = i + 1
 			end	
+			for j = i, 5, 1 do
+				types[j].text = ""
+				rests[j].text = "No More Restaurants"
+				rests[j]:setReferencePoint( display.TopLeftReferencePoint )
+				rests[j].x = xMar
+			end
 		end
 		return true;
 	end
@@ -176,7 +182,7 @@ function createBars()
 		bars[ #bars + 1 ] = bar
 
 		--create restaurant titles
-		local rest = display.newText("No more restaurants", xMar, bar.y - spacing * 3, "Segan", 18)
+		local rest = display.newText("Loading...", xMar, bar.y - spacing * 3, "Segan", 18)
 		rest:setTextColor( black )
 		rest.alpha = 0
 
