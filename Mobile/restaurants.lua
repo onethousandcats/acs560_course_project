@@ -42,25 +42,28 @@ end
 
 local function selectRest( event )
 
-	if ( event.phase == "began" ) then
-		local restaurantName =  rests[ event.target.rid ].text
-		mealObjects = {}
-		for i = 1, #data, 1 do
-			if (data[i].restaurant == restaurantName) then
-				mealObjects[#mealObjects + 1] = data[i]
-			end
-		end
-		local opt =
-		{
-			params = 
-			{
-				name = restaurantName,
-				meals = mealObjects
-			}
-		}
-
-		storyboard.gotoScene("restaurant", opt)
+	for i = 1, 5, 1 do
+		bars[i]:removeEventListener("touch", selectRest)
 	end
+	
+	local restaurantName =  rests[ event.target.rid ].text
+	mealObjects = {}
+	for i = 1, #data, 1 do
+		if (data[i].restaurant == restaurantName) then
+			mealObjects[#mealObjects + 1] = data[i]
+		end
+	end
+	local opt =
+	{
+		params = 
+		{
+			name = restaurantName,
+			meals = mealObjects
+		}
+	}
+
+	storyboard.gotoScene("restaurant", opt)
+
 end
 
 -- Called when the scene's view does not exist:
@@ -239,6 +242,7 @@ function scene:exitScene( event )
 		transition.to( chevs[i], { time = d, delay = d + (i - 1) * 200, alpha = 0 })
 
 		bars[i]:removeEventListener( "touch", selectRest )
+
 	end 
 
 end

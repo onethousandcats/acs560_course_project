@@ -5,7 +5,7 @@
 ----------------------------------------------------------------------------------
 
 local storyboard = require( "storyboard" )
-local scene = storyboard.newScene()
+local scene = storyboard:newScene()
 
 ----------------------------------------------------------------------------------
 -- 
@@ -120,7 +120,6 @@ end
 -- Called prior to the removal of scene's "view" (display group)
 function scene:destroyScene( event )
 	local group = self.view
-	
 	-----------------------------------------------------------------------------
 	
 	--	INSERT code here (e.g. remove listeners, widgets, save state, etc.)
