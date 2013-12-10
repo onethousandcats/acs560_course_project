@@ -88,40 +88,7 @@ function scene:createScene( event )
 	header:setTextColor( black )
 	header.alpha = 0
 
-	for i = 1, 5, 1 do
-		
-		--create bars
-		local bar = display.newRect(0, 0, w - spacing, barH)
-		bar:setFillColor( 254, 254, 254 )
-		bar.x , bar.y = w / 2, margin + (barH  + spacing / 2) * (i - 1)
-		bar.alpha = 0
-		bar.rid = i
-
-		bars[ #bars + 1 ] = bar
-
-		--create restaurant titles
-		local rest = display.newText("loading...", xMar, bar.y - spacing * 3, "Segan", 18)
-		rest:setTextColor( black )
-		rest.alpha = 0
-
-		rests[ #rests + 1 ] = rest
-
-		--create restaurant titles
-		local t = display.newText("loading type...", xMar, bar.y + spacing, "Segan", 14)
-		t:setTextColor( black )
-		t.alpha = 0
-
-		types[ #types + 1 ] = t
-
-
-		--create chevrons
-		local c = display.newText(">", w - xMar, bar.y - spacing, "Segan", 18)
-		c:setTextColor( black )
-		c.alpha = 0
-
-		chevs[ #chevs + 1 ] = c
-	
-	end
+	createBars()
 
 	local retW = 24
 
@@ -145,16 +112,19 @@ function scene:createScene( event )
 			print ( "RESPONSE:" .. event.response )
 			data = json.decode( event.response )
 			local restaurants = {}
+			local restaurantTypes = {}
 			for i = 1, #data, 1 do	
 				local restaurant = data[i].restaurant
 				if (restaurants[restaurant] == nil) then
 					restaurants[restaurant] = 1
+					restaurantTypes[#restaurantTypes + 1] = data[i].type
 				else
 					restaurants[restaurant] = restaurants[restaurant] + 1
 				end
 			end
 			local i = 1
 			for restaurant, num_of_items in pairs(restaurants) do
+				types[i].text = restaurantTypes[i]
 				rests[i].text = restaurant
 				rests[i]:setReferencePoint( display.TopLeftReferencePoint )
 				rests[i].x = xMar
@@ -193,7 +163,42 @@ function scene:createScene( event )
 	getRestaurants()
 	
 end
+function createBars()
+	for i = 1, 5, 1 do
+		
+		--create bars
+		local bar = display.newRect(0, 0, w - spacing, barH)
+		bar:setFillColor( 254, 254, 254 )
+		bar.x , bar.y = w / 2, margin + (barH  + spacing / 2) * (i - 1)
+		bar.alpha = 0
+		bar.rid = i
 
+		bars[ #bars + 1 ] = bar
+
+		--create restaurant titles
+		local rest = display.newText("No more restaurants", xMar, bar.y - spacing * 3, "Segan", 18)
+		rest:setTextColor( black )
+		rest.alpha = 0
+
+		rests[ #rests + 1 ] = rest
+
+		--create restaurant titles
+		local t = display.newText("", xMar, bar.y + spacing, "Segan", 14)
+		t:setTextColor( black )
+		t.alpha = 0
+
+		types[ #types + 1 ] = t
+
+
+		--create chevrons
+		local c = display.newText(">", w - xMar, bar.y - spacing, "Segan", 18)
+		c:setTextColor( black )
+		c.alpha = 0
+
+		chevs[ #chevs + 1 ] = c
+	
+	end
+end
 
 -- Called immediately after scene has moved onscreen:
 function scene:enterScene( event )

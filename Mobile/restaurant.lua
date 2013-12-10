@@ -28,12 +28,15 @@ local ret
 local bars = {}
 local rests = {}
 local meals
+local scrollView
 ---------------------------------------------------------------------------------
 -- BEGINNING OF YOUR IMPLEMENTATION
 ---------------------------------------------------------------------------------
 
 -- Called when the scene's view does not exist:
 function scene:createScene( event )
+	bars = {}
+	rests = {}
 	local group = self.view
 
 	-----------------------------------------------------------------------------
@@ -139,8 +142,14 @@ end
 
 --Quickly added this function, needs to be cleaned up.
 function createBars()
+	local widget = require "widget"
 	local w = display.viewableContentWidth
 	local h = display.viewableContentHeight
+	local Mask = require("mask")
+    local OPTIONS_LIST_HEIGHT = 300
+    local OPTIONS_LIST_WIDTH = w
+ 
+
 	margin = h / 4
 	barH = h / 10
 	spacing = h / 100
@@ -169,6 +178,8 @@ function createBars()
 		transition.to( bars[i], { time = 600, delay = d + (i - 1) * 200, alpha = 1 } )
 		transition.to( rests[i], { time = 600, delay = d + (i - 1) * 200, alpha = 1 } )
 	end
+	transition.to( scrollView, { time = 600, delay = d, alpha = 1 })
+	print(#bars)
 end
 function updateStats( mealIndex )
 	return function(event)
@@ -250,6 +261,8 @@ function scene:exitScene( event )
 
 	transition.to( b, { time = 600, delay = 600, alpha = 0 })
 
+	--transition.to( scrollView, { time = 600, delay = d, alpha = 0 })
+
 	for i = 1, #icons, 1 do
 		transition.to( icons[i], { time = 600, delay = 600, alpha = 0 })		
 		transition.to( stats[i], { time = 600, delay = 800, alpha = 0 })	
@@ -259,6 +272,8 @@ function scene:exitScene( event )
 		transition.to( bars[i], { time = 600, delay = 600, alpha = 0 } )
 		transition.to( rests[i], { time = 600, delay = 600, alpha = 0 } )
 	end
+	bars = {}
+	rests = {}
 end
 
 
@@ -269,6 +284,10 @@ function scene:destroyScene( event )
 	header:removeSelf()
 	ret:removeSelf()
 	
+	bars = {}
+	rests = {}
+	--:removeSelf()
+    --scrollView = nil
 end
 
 
