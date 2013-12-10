@@ -1,8 +1,10 @@
-insert into Restaurant values ("Subway");
-insert into Restaurant values ("Jimmy Johns");
-insert into Restaurant values ("Chipotle");
-insert into Restaurant values ("Qdoba");
-insert into Restaurant values ("Panera");
+insert into Restaurant values ("Subway", "Sandwich");
+insert into Restaurant values ("Jimmy Johns", "Sandwich");
+insert into Restaurant values ("Chipotle", "Mexican");
+insert into Restaurant values ("Qdoba", "Mexican");
+insert into Restaurant values ("Panera", "Bakery-Cafe");
+insert into Restaurant values ("McDonalds", "American Fast Food");
+insert into Restaurant values ("Burger King", "American Fast Food");
 
 insert into Meal values ("6 inch BLT",320, 9, 20, 650, "Subway");
 insert into Meal values ("6 inch Big Philly Cheesesteak",500, 17, 85, 1280, "Subway");
@@ -13,5 +15,8 @@ insert into Meal values ("Chicken White Rice Burrito",650, 19, 115, 1240, "Chipo
 insert into Meal values ("Burrito with Cheese",405, 14, 25, 1090, "Qdoba");
 insert into Meal values ("Plain Bagel",290, 1, 0, 460, "Panera");
 insert into Meal values ("Broccoli Cheddar Soup",330, 21, 75, 1390, "Panera");
-
+insert into Meal values ("Big Mac",550, 29, 75, 970, "McDonalds");
+insert into Meal values ("Small French Fries",230, 11, 0, 160, "Panera");
+insert into Meal values ("Whopper",630, 35, 65, 980, "McDonalds");
+insert into Meal values ("Chicken Nuggets (4 pc)",190, 11, 25, 310, "Panera");
 Select * from Meal;

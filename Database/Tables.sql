@@ -1,7 +1,8 @@
 drop table Restaurant;
 drop table Meal;
 CREATE TABLE Restaurant(
-	name VARCHAR(100) PRIMARY KEY
+	name VARCHAR(100) PRIMARY KEY,
+	type VARCHAR(100)
 );
 CREATE TABLE Meal(
 	name VARCHAR(100) PRIMARY KEY,
